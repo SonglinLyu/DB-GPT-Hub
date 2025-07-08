@@ -6,8 +6,8 @@ from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
 
 sys.path.append(os.path.dirname(__file__))
-from LcypherLexer import LcypherLexer
-from LcypherParser import LcypherParser
+from GQLLexer import GQLLexer
+from GQLParser import GQLParser
 
 
 class MyErrorListener(ErrorListener):
@@ -18,28 +18,28 @@ class MyErrorListener(ErrorListener):
 
 
 class GrammarEvaluator:
-    def evaluate(self, query_predict, query_gold, db_id):
+    def evaluate(self, query_predict, query_gold):
         error_listener = MyErrorListener()
         try:
             input_stream = InputStream(query_gold)
-            lexer = LcypherLexer(input_stream)
+            lexer = GQLLexer(input_stream)
             lexer.removeErrorListeners()
             lexer.addErrorListener(error_listener)
             stream = CommonTokenStream(lexer)
-            parser = LcypherParser(stream)
+            parser = GQLParser(stream)
             parser.removeErrorListeners()
             parser.addErrorListener(error_listener)
-            tree = parser.oC_Cypher()
+            tree = parser.gqlProgram()
             try:
                 input_stream = InputStream(query_predict)
-                lexer = LcypherLexer(input_stream)
+                lexer = GQLLexer(input_stream)
                 lexer.removeErrorListeners()
                 lexer.addErrorListener(error_listener)
                 stream = CommonTokenStream(lexer)
-                parser = LcypherParser(stream)
+                parser = GQLParser(stream)
                 parser.removeErrorListeners()
                 parser.addErrorListener(error_listener)
-                tree = parser.oC_Cypher()
+                tree = parser.gqlProgram()
                 return 1
             except Exception as e:
                 return 0
